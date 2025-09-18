@@ -1,0 +1,3 @@
+{ "title":"Recovery","status":"OK","point":"Apply fallback + re-test",
+  "because":["fallback: rules-first","tests: re-run","human: reviewed"],
+  "but":"","so":"stable; proceed","metrics":{"coherence":{"band":"green"}} }
