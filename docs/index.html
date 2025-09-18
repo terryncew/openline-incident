@@ -1,0 +1,30 @@
+<!doctype html><meta charset="utf-8">
+<title>OpenLine Incident Demo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script type="module" src="https://cdn.jsdelivr.net/gh/terryncew/openline-core@main/receipts-kit/openline-card.js"></script>
+<style>
+  body{font:16px/1.5 system-ui,-apple-system,Segoe UI,Helvetica,Arial;margin:28px;background:#fafafa;color:#111}
+  h1{margin:0 0 10px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  .box{background:#fff;border:1px solid #eee;border-radius:12px;padding:14px}
+  .muted{color:#666}
+</style>
+
+<h1>Incident Response Demo (OpenLine + COLE)</h1>
+<p class="muted">Normal → Incident → Recovery. “No receipt, no ship.”</p>
+
+<div class="grid">
+  <div class="box"><h3 style="margin:0 0 6px">1) Normal</h3>
+    <openline-card mode="compact" src="./receipts/normal.json"></openline-card>
+  </div>
+  <div class="box"><h3 style="margin:0 0 6px">2) Incident</h3>
+    <openline-card mode="compact" src="./receipts/incident.json"></openline-card>
+  </div>
+  <div class="box"><h3 style="margin:0 0 6px">3) Recovery</h3>
+    <openline-card mode="compact" src="./receipts/recovery.json"></openline-card>
+  </div>
+</div>
+
+<p class="muted" style="margin-top:14px">
+  Latest: <openline-card mode="compact" src="./receipt.latest.json"></openline-card>
+</p>
