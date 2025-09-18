@@ -1,0 +1,56 @@
+name: Simulate Incident
+on:
+  workflow_dispatch: {}
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    permissions: { contents: write }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate receipts (no Codespaces)
+        shell: bash
+        run: |
+          set -e
+          mkdir -p docs/receipts
+          now(){ date -u +"%Y-%m-%dT%H:%M:%SZ"; }
+          sha256(){ printf "%s" "$1" | sha256sum | awk '{print $1}'; }
+
+          emit(){ file="$1"; title="$2"; status="$3"; point="$4"; because="$5"; but="$6"; so="$7"; band="$8";
+            digest="$(sha256 "$title$status$point$so")"
+            cat > "$file" <<JSON
+{
+  "title": "$title",
+  "status": "$status",
+  "point": "$point",
+  "because": $because,
+  "but": "$but",
+  "so": "$so",
+  "metrics": { "coherence": { "band": "$band" } },
+  "policy": { "use": "internal-demo", "train": "no", "share": "yes" },
+  "stamp": { "issued_at": "$(now)", "digest_sha256": "$digest" }
+}
+JSON
+          }
+
+          emit docs/receipts/normal.json   "Receipt"  "OK"    "Execute plan" \
+            '["mode: normal","tests: passing","owner: service"]' "" "ok" "green"
+
+          emit docs/receipts/incident.json "Incident" "ERROR" "Detect incoherence" \
+            '["COLE: deviation > threshold","context: build step"]' \
+            "contradiction: tool says success while tests fail" \
+            "halted and rolled back one step" "red"
+
+          emit docs/receipts/recovery.json "Recovery" "OK"    "Apply fallback + re-test" \
+            '["fallback: rules-first","tests: re-run","human: reviewed"]' "" \
+            "stable; proceed" "green"
+
+          cp docs/receipts/recovery.json docs/receipt.latest.json
+
+      - name: Commit receipts
+        run: |
+          git config user.name "openline-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add docs/receipt.latest.json docs/receipts/*.json
+          git commit -m "demo: incident → recovery" || echo "no changes"
+          git push
