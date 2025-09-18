@@ -1,0 +1,3 @@
+{ "title":"Receipt","status":"OK","point":"Execute plan",
+  "because":["mode: normal","tests: passing","owner: service"],
+  "but":"","so":"ok","metrics":{"coherence":{"band":"green"}} }
