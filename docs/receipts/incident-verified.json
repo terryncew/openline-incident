@@ -1,0 +1,13 @@
+{
+  "title": "Incident",
+  "status": "ERROR",
+  "point": "Detect incoherence",
+  "because": [
+    "COLE: deviation > threshold",
+    "context: build step"
+  ],
+  "but": "contradiction: tool says success while tests fail",
+  "so": "halted and rolled back one step",
+  "metrics": { "coherence": { "band": "red" } },
+  "policy": { "use": "internal-demo", "share": "yes", "train": "no" }
+}
