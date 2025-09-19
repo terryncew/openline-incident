@@ -1,86 +1,44 @@
 <!doctype html><meta charset="utf-8">
-<title>Incident Demo (Debug)</title>
+<title>Incident Response Demo (OpenLine + COLE)</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
   body{font:16px/1.5 system-ui,-apple-system,Segoe UI,Helvetica,Arial;margin:28px;background:#fafafa;color:#111}
-  h1{margin:0 0 10px} .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  h1{margin:0 0 10px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
   .box{background:#fff;border:1px solid #eee;border-radius:12px;padding:14px}
-  pre{background:#111;color:#eee;padding:10px;border-radius:8px;overflow:auto}
   .muted{color:#666}
 </style>
 
+<!-- receipt card component -->
 <script type="module" src="https://cdn.jsdelivr.net/gh/terryncew/openline-core@main/receipts-kit/openline-card.js"></script>
 
-<h1>Incident Response Demo (Debug)</h1>
-<p class="muted">If a card fails, the log below tells us exactly which URL and why.</p>
+<h1>Incident Response Demo (OpenLine + COLE)</h1>
+<p class="muted">Normal → Incident → Recovery. “No receipt, no ship.”</p>
 
 <div class="grid">
   <div class="box">
-    <h3>1) Normal</h3>
-    <openline-card id="card-normal" mode="compact" src=""></openline-card>
-    <div class="muted">src: <code id="src-normal"></code></div>
+    <h3 style="margin:0 0 6px">1) Normal</h3>
+    <openline-card id="normal"   mode="compact"></openline-card>
+    <div class="muted" style="font-size:12px">src: <code>./receipts/normal.json</code></div>
   </div>
 
   <div class="box">
-    <h3>2) Incident</h3>
-    <openline-card id="card-incident" mode="compact" src=""></openline-card>
-    <div class="muted">src: <code id="src-incident"></code></div>
+    <h3 style="margin:0 0 6px">2) Incident</h3>
+    <openline-card id="incident" mode="compact"></openline-card>
+    <div class="muted" style="font-size:12px">src: <code>./receipts/incident-verified.json</code></div>
   </div>
 
   <div class="box">
-    <h3>3) Recovery</h3>
-    <openline-card id="card-recovery" mode="compact" src=""></openline-card>
-    <div class="muted">src: <code id="src-recovery"></code></div>
+    <h3 style="margin:0 0 6px">3) Recovery</h3>
+    <openline-card id="recovery" mode="compact"></openline-card>
+    <div class="muted" style="font-size:12px">src: <code>./receipts/recovery.json</code></div>
   </div>
 </div>
 
-<h3>Fetch log</h3>
-<pre id="log">…waiting…</pre>
-
 <script>
-(async () => {
-  const log = (m) => (document.getElementById('log').textContent += m + "\n");
-  const bust = '?v=' + Date.now();
-
-  const plan = [
-    { id: 'normal',   paths: ['./receipts/normal.json',   'https://raw.githubusercontent.com/terryncew/openline-incident/main/docs/receipts/normal.json'] },
-    { id: 'incident', paths: ['./receipts/incident.json', 'https://raw.githubusercontent.com/terryncew/openline-incident/main/docs/receipts/incident.json'] },
-    { id: 'recovery', paths: ['./receipts/recovery.json', 'https://raw.githubusercontent.com/terryncew/openline-incident/main/docs/receipts/recovery.json'] },
-  ];
-
-  for (const {id, paths} of plan) {
-    const card = document.getElementById('card-' + id);
-    const label = document.getElementById('src-' + id);
-    let success = false;
-
-    for (const p of paths) {
-      const url = p + bust;
-      try {
-        log(`[${id}] probing ${url}`);
-        const res = await fetch(url, {cache:'no-store'});
-        log(`[${id}] status ${res.status}`);
-        if (!res.ok) continue;
-
-        const text = await res.text();
-        try { JSON.parse(text); } catch(e) {
-          log(`[${id}] JSON parse error: ${e}`);
-          continue;
-        }
-
-        card.setAttribute('src', url);
-        label.textContent = p;
-        log(`[${id}] OK -> ${p}`);
-        success = true;
-        break;
-      } catch (e) {
-        log(`[${id}] fetch error: ${e}`);
-      }
-    }
-
-    if (!success) {
-      label.textContent = 'failed to resolve any source';
-      log(`[${id}] all sources failed`);
-    }
-  }
-})();
+  // add a cache-buster to avoid stale CDN content
+  const v = '?v=' + Date.now();
+  document.getElementById('normal')  .setAttribute('src', './receipts/normal.json' + v);
+  document.getElementById('incident').setAttribute('src', './receipts/incident-verified.json' + v);
+  document.getElementById('recovery').setAttribute('src', './receipts/recovery.json' + v);
 </script>
