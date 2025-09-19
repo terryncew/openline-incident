@@ -1,44 +1,54 @@
-<!doctype html><meta charset="utf-8">
-<title>Incident Response Demo (OpenLine + COLE)</title>
+<!doctype html>
+<meta charset="utf-8">
+<title>Incident Response Demo</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!-- Card component -->
+<script type="module"
+  src="https://cdn.jsdelivr.net/gh/terryncew/openline-core@main/receipts-kit/openline-card.js"></script>
+
 <style>
-  body{font:16px/1.5 system-ui,-apple-system,Segoe UI,Helvetica,Arial;margin:28px;background:#fafafa;color:#111}
-  h1{margin:0 0 10px}
-  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-  .box{background:#fff;border:1px solid #eee;border-radius:12px;padding:14px}
-  .muted{color:#666}
+  :root { --bg:#fafafa; --ink:#111; --muted:#6b7280; --line:#eaeaea; }
+  html,body{background:var(--bg); color:var(--ink); margin:0}
+  .wrap{max-width:980px; margin:32px auto; padding:0 20px; font:16px/1.5 system-ui,-apple-system,Segoe UI,Helvetica,Arial}
+  h1{font-size:28px; font-weight:700; margin:0 0 6px}
+  .sub{color:var(--muted); margin:0 0 18px}
+  .grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  .box{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px}
+  .box h3{margin:0 0 8px; font-size:18px}
+  footer{margin-top:16px; color:var(--muted); font-size:13px}
 </style>
 
-<!-- receipt card component -->
-<script type="module" src="https://cdn.jsdelivr.net/gh/terryncew/openline-core@main/receipts-kit/openline-card.js"></script>
+<main class="wrap">
+  <h1>Incident Response Demo</h1>
+  <p class="sub">Normal → Incident → Recovery. No receipt, no ship.</p>
 
-<h1>Incident Response Demo (OpenLine + COLE)</h1>
-<p class="muted">Normal → Incident → Recovery. “No receipt, no ship.”</p>
+  <section class="grid">
+    <article class="box">
+      <h3>1) Normal</h3>
+      <openline-card id="card-normal" mode="compact" aria-label="Normal receipt"></openline-card>
+    </article>
 
-<div class="grid">
-  <div class="box">
-    <h3 style="margin:0 0 6px">1) Normal</h3>
-    <openline-card id="normal"   mode="compact"></openline-card>
-    <div class="muted" style="font-size:12px">src: <code>./receipts/normal.json</code></div>
-  </div>
+    <article class="box">
+      <h3>2) Incident</h3>
+      <openline-card id="card-incident" mode="compact" aria-label="Incident receipt"></openline-card>
+    </article>
 
-  <div class="box">
-    <h3 style="margin:0 0 6px">2) Incident</h3>
-    <openline-card id="incident" mode="compact"></openline-card>
-    <div class="muted" style="font-size:12px">src: <code>./receipts/incident-verified.json</code></div>
-  </div>
+    <article class="box">
+      <h3>3) Recovery</h3>
+      <openline-card id="card-recovery" mode="compact" aria-label="Recovery receipt"></openline-card>
+    </article>
+  </section>
 
-  <div class="box">
-    <h3 style="margin:0 0 6px">3) Recovery</h3>
-    <openline-card id="recovery" mode="compact"></openline-card>
-    <div class="muted" style="font-size:12px">src: <code>./receipts/recovery.json</code></div>
-  </div>
-</div>
+  <footer>Receipts are read from <code>/docs/receipts</code>. Refresh to force latest.</footer>
+</main>
 
 <script>
-  // add a cache-buster to avoid stale CDN content
+  // Cache-buster so GitHub Pages/CDN never serves a stale JSON
   const v = '?v=' + Date.now();
-  document.getElementById('normal')  .setAttribute('src', './receipts/normal.json' + v);
-  document.getElementById('incident').setAttribute('src', './receipts/incident-verified.json' + v);
-  document.getElementById('recovery').setAttribute('src', './receipts/recovery.json' + v);
+  const set = (id, path) => document.getElementById(id).setAttribute('src', path + v);
+
+  set('card-normal',   './receipts/normal.json');
+  set('card-incident', './receipts/incident-verified.json');
+  set('card-recovery', './receipts/recovery.json');
 </script>
